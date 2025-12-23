@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crox | Giriş Kayıtları</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: #f8f9fc; display: flex; }
+        
+        /* Sidebar */
+        .sidebar { width: 260px; background: #fff; height: 100vh; border-right: 1px solid #e0e0e0; padding: 30px 20px; position: fixed; }
+        .logo { font-size: 24px; font-weight: 800; color: #6c5ce7; text-decoration: none; display: block; margin-bottom: 40px; }
+        .nav-item { padding: 12px 15px; color: #555; text-decoration: none; display: block; border-radius: 10px; margin-bottom: 5px; }
+        .nav-item.active { background: #f1f0ff; color: #6c5ce7; font-weight: bold; }
+
+        /* İçerik */
+        .main-content { margin-left: 260px; flex: 1; padding: 40px; }
+        .log-container { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid #f1f0ff; color: #888; font-size: 14px; }
+        td { padding: 15px 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; }
+        
+        .ip-badge { background: #2d3436; color: #00cec9; padding: 4px 8px; border-radius: 5px; font-family: monospace; }
+        .status-online { color: #2ecc71; font-weight: bold; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="index.html" class="logo">CROX</a>
+        <a href="dashboard.html" class="nav-item">🏠 Dashboard</a>
+        <a href="orders.html" class="nav-item">💰 Siparişler</a>
+        <a href="logs.html" class="nav-item active">🔑 Girişler</a>
+        <a href="settings.html" class="nav-item">⚙️ Ayarlar</a>
+    </div>
+
+    <div class="main-content">
+        <div class="log-container">
+            <h2>Sistem Giriş Kayıtları</h2>
+            <p style="color: #888; font-size: 14px; margin-bottom: 20px;">Paneline erişim sağlayan IP adresleri ve konumları listelenir.</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tarih / Saat</th>
+                        <th>IP Adresi</th>
+                        <th>Konum</th>
+                        <th>Cihaz / Tarayıcı</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody id="logTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function fetchLogs() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                const now = new Date().toLocaleString('tr-TR');
+                
+                const tableBody = document.getElementById('logTableBody');
+                
+                // Gerçek veriyi tabloya ekleyelim
+                const row = `
+                    <tr>
+                        <td>${now}</td>
+                        <td><span class="ip-badge">${data.ip}</span></td>
+                        <td>${data.city}, ${data.country_name}</td>
+                        <td>${navigator.platform} / Chrome</td>
+                        <td><span class="status-online">● Aktif Oturum</span></td>
+                    </tr>
+                `;
+                tableBody.innerHTML = row;
+                
+                // Demo veriler (Daha dolu gözükmesi için)
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>22.12.2025 14:20</td>
+                        <td><span class="ip-badge">176.234.12.88</span></td>
+                        <td>İstanbul, Türkiye</td>
+                        <td>iPhone / Safari</td>
+                        <td style="color:#aaa">Bitti</td>
+                    </tr>
+                `;
+            } catch (error) {
+                console.error("Giriş verisi alınamadı");
+            }
+        }
+        window.onload = fetchLogs;
+    </script>
+</body>
+</html>
