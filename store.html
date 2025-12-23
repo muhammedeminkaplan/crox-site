@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Crox Mağaza | Vitrin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        .store-header { height: 200px; background: #6c5ce7; display: flex; align-items: center; justify-content: center; color: white; flex-direction: column; }
+        .container { max-width: 1000px; margin: 50px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; }
+        .card { background: white; border-radius: 15px; border: 1px solid #eee; overflow: hidden; text-align: center; padding-bottom: 20px; }
+        .img { height: 200px; background: #f9f9f9; margin-bottom: 15px; }
+        .price { color: #6c5ce7; font-weight: 800; font-size: 20px; margin: 10px 0; }
+        .btn { background: #333; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="store-header">
+        <h1>Tasarım Dünyası</h1>
+        <p>En şık ürünler burada.</p>
+    </div>
+    <div class="container">
+        <div class="grid">
+            <div class="card">
+                <div class="img"></div>
+                <h3>Minimalist Saat</h3>
+                <p class="price">₺1,250.00</p>
+                <a href="odeme.html" class="btn">Satın Al</a>
+            </div>
+            <div class="card">
+                <div class="img"></div>
+                <h3>Deri Cüzdan</h3>
+                <p class="price">₺550.00</p>
+                <a href="odeme.html" class="btn">Satın Al</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
