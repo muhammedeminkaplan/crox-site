@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crox | Sipariş Yönetimi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: #f8f9fc; display: flex; }
+        
+        /* Sidebar */
+        .sidebar { width: 260px; background: #fff; height: 100vh; border-right: 1px solid #e0e0e0; padding: 30px 20px; position: fixed; }
+        .logo { font-size: 24px; font-weight: 800; color: #6c5ce7; text-decoration: none; display: block; margin-bottom: 40px; }
+        .nav-item { padding: 12px 15px; color: #555; text-decoration: none; display: block; border-radius: 10px; margin-bottom: 5px; }
+        .nav-item.active { background: #f1f0ff; color: #6c5ce7; font-weight: bold; }
+
+        /* Ana İçerik */
+        .main-content { margin-left: 260px; flex: 1; padding: 40px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        
+        /* Sipariş Kartları */
+        .order-list { display: flex; flex-direction: column; gap: 15px; }
+        .order-card { background: white; border-radius: 15px; padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border: 1px solid #eee; }
+        
+        .order-info { display: flex; align-items: center; gap: 20px; }
+        .order-id { background: #f1f0ff; color: #6c5ce7; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 13px; }
+        
+        .status-badge { font-size: 12px; padding: 5px 12px; border-radius: 50px; font-weight: 600; }
+        .status-waiting { background: #fff4e5; color: #ff9800; }
+        .status-shipped { background: #e8f7ee; color: #2ecc71; }
+
+        .btn-ship { background: #6c5ce7; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-ship:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Mobil Uyumluluk */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; padding: 20px; }
+            .order-card { flex-direction: column; align-items: flex-start; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <a href="dashboard.html" class="logo">CROX</a>
+        <a href="dashboard.html" class="nav-item">🏠 Dashboard</a>
+        <a href="orders.html" class="nav-item active">💰 Siparişler</a>
+        <a href="settings.html" class="nav-item">⚙️ Ayarlar</a>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Sipariş Yönetimi</h1>
+            <button onclick="addDemoOrder()" style="background:#333; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer;">+ Test Siparişi Ekle</button>
+        </div>
+
+        <div id="orderList" class="order-list">
+            </div>
+    </div>
+
+    <script>
+        // Örnek başlangıç verileri
+        let orders = JSON.parse(localStorage.getItem('croxOrders')) || [
+            { id: 'CRX-9921', customer: 'Ahmet Yılmaz', product: 'Minimalist Saat', amount: '1.250,00', status: 'waiting' },
+            { id: 'CRX-9920', customer: 'Ayşe Demir', product: 'Deri Cüzdan', amount: '550,00', status: 'shipped' }
+        ];
+
+        function renderOrders() {
+            const list = document.getElementById('orderList');
+            list.innerHTML = '';
+
+            orders.forEach((order, index) => {
+                const card = document.createElement('div');
+                card.className = 'order-card';
+                card.innerHTML = `
+                    <div class="order-info">
+                        <div class="order-id">${order.id}</div>
+                        <div>
+                            <h4 style="color:#333">${order.customer}</h4>
+                            <p style="font-size:13px; color:#888">${order.product} - ₺${order.amount}</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <span class="status-badge ${order.status === 'waiting' ? 'status-waiting' : 'status-shipped'}">
+                            ${order.status === 'waiting' ? 'Kargo Bekliyor' : 'Kargolandı'}
+                        </span>
+                        ${order.status === 'waiting' ? 
+                            `<button class="btn-ship" onclick="shipOrder(${index})">Kargoya Ver</button>` : 
+                            `<button class="btn-ship" disabled>Tamamlandı</button>`
+                        }
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // Siparişi kargolandı olarak işaretle
+        window.shipOrder = (index) => {
+            orders[index].status = 'shipped';
+            saveAndRender();
+        };
+
+        // Yeni test siparişi ekle
+        window.addDemoOrder = () => {
+            const newOrder = {
+                id: 'CRX-' + Math.floor(1000 + Math.random() * 9000),
+                customer: 'Yeni Müşteri',
+                product: 'Örnek Ürün',
+                amount: '750,00',
+                status: 'waiting'
+            };
+            orders.unshift(newOrder); // En başa ekle
+            saveAndRender();
+        };
+
+        function saveAndRender() {
+            localStorage.setItem('croxOrders', JSON.stringify(orders));
+            renderOrders();
+        }
+
+        // Sayfa açıldığında listele
+        renderOrders();
+    </script>
+
+</body>
+</html>
